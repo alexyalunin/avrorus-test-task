@@ -6,10 +6,10 @@ services:
 
 before_install:
   - docker pull ethereum/client-go:latest
-  - docker pull ethereum/solc:latest
+  - docker pull ethereum/solc:0.5.8
 
 install:
-  - npm install -g truffle
+  - npm install -g truffle@5.0.35
   - npm install -g ganache-cli
   - npm install
 script:
