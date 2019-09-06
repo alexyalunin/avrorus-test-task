@@ -6,7 +6,7 @@ import "./CreditorRole.sol";
 import "./Utils.sol";
 
 
-contract LoanApplicationContract is Ownable, CreditorRole {
+contract LoanApplicationsContract is Ownable, CreditorRole {
     
     using ECDSA for bytes32;
     using Utils for uint;
@@ -31,19 +31,19 @@ contract LoanApplicationContract is Ownable, CreditorRole {
    
     
     modifier applicationIsNotCompletedByCreditor(uint _id) {
-        require(_id < applications.length, "LoanApplicationContract: application _id is out of bounds");
+        require(_id < applications.length, "LoanApplicationsContract: application _id is out of bounds");
         Application memory app = applications[_id];
-        require(!app.completedByCreditor, "LoanApplicationContract: application is already completed by creditor");
+        require(!app.completedByCreditor, "LoanApplicationsContract: application is already completed by creditor");
         _;
     }
     
     modifier applicationIsReadyForBorrower(uint _id, address _borrower) {
-        require(_id < applications.length, "LoanApplicationContract: application _id is out of bounds");
+        require(_id < applications.length, "LoanApplicationsContract: application _id is out of bounds");
         Application memory app = applications[_id];
-        require(app.borrower == _borrower, "LoanApplicationContract: borrower is not correct");
-        require(app.completedByCreditor, "LoanApplicationContract: application is not yet completed by creditor");
-        require(app.amountApproved > 0, "LoanApplicationContract: application is rejected by creditor");
-        require(!app.completedByBorrower, "LoanApplicationContract: application is already completed be borrower");
+        require(app.borrower == _borrower, "LoanApplicationsContract: borrower is not correct");
+        require(app.completedByCreditor, "LoanApplicationsContract: application is not yet completed by creditor");
+        require(app.amountApproved > 0, "LoanApplicationsContract: application is rejected by creditor");
+        require(!app.completedByBorrower, "LoanApplicationsContract: application is already completed be borrower");
         _;
     }
 
@@ -58,7 +58,7 @@ contract LoanApplicationContract is Ownable, CreditorRole {
     }
     
     function _createApplication(address payable _borrower, uint _amount) internal returns(uint) {
-        require(_amount != 0, "LoanApplicationContract: amount should be more than zero");
+        require(_amount != 0, "LoanApplicationsContract: amount should be more than zero");
         
         Application memory app = Application({
             borrower: _borrower,
@@ -84,7 +84,7 @@ contract LoanApplicationContract is Ownable, CreditorRole {
     {
         require(msg.value > 0);
         Application storage app = applications[_id];
-        require(msg.value <= app.amountRequested, "LoanApplicationContract: amount to be approved is more than requested");
+        require(msg.value <= app.amountRequested, "LoanApplicationsContract: amount to be approved is more than requested");
         app.creditor = msg.sender;
         app.completedByCreditor = true;
         app.amountApproved = msg.value;
@@ -136,9 +136,9 @@ contract LoanApplicationContract is Ownable, CreditorRole {
         bytes32 _hash, 
         bytes calldata _signature
     ) external returns(uint) {
-        require(_signer != address(0), "LoanApplicationContract: signer can not be zero address");
-        require(_amount > 0, "LoanApplicationContract: amount has to be grater than zero");
-        require(!borrowerToNonce[_signer][_nonce], "LoanApplicationContract: nonce is already used");
+        require(_signer != address(0), "LoanApplicationsContract: signer can not be zero address");
+        require(_amount > 0, "LoanApplicationsContract: amount has to be grater than zero");
+        require(!borrowerToNonce[_signer][_nonce], "LoanApplicationsContract: nonce is already used");
         borrowerToNonce[_signer][_nonce] = true; // stack is too deep error fix
         
         string memory nonceStr;
@@ -158,9 +158,9 @@ contract LoanApplicationContract is Ownable, CreditorRole {
                                                 nonceStr, 
                                                 ', Amount: ', 
                                                 amountStr));
-        require(hash == _hash, "LoanApplicationContract: hash is not correct");
+        require(hash == _hash, "LoanApplicationsContract: hash is not correct");
         address signer = _hash.recover(_signature);
-        require(signer == _signer, "LoanApplicationContract: signature is not correct");
+        require(signer == _signer, "LoanApplicationsContract: signature is not correct");
         
         return _createApplication(_signer, _amount);
     }
@@ -171,7 +171,7 @@ contract LoanApplicationContract is Ownable, CreditorRole {
         bytes32 _hash, 
         bytes calldata _signature
     ) external {
-        require(_signer != address(0), "LoanApplicationContract: signer can not be zero address");
+        require(_signer != address(0), "LoanApplicationsContract: signer can not be zero address");
         
         string memory idStr;
         uint idStrLen;
@@ -185,9 +185,9 @@ contract LoanApplicationContract is Ownable, CreditorRole {
                                                 lenStr, 
                                                 'Accept Application, Id: ', 
                                                 idStr));
-        require(hash == _hash, "LoanApplicationContract: hash is not correct");
+        require(hash == _hash, "LoanApplicationsContract: hash is not correct");
         address signer = _hash.recover(_signature);
-        require(signer == _signer, "LoanApplicationContract: signature is not correct");
+        require(signer == _signer, "LoanApplicationsContract: signature is not correct");
         
         _acceptApplication(_id, _signer);
     }
