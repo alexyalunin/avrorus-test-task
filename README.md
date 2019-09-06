@@ -1,8 +1,8 @@
-# Bounty0xStakingContract
+# Loan Applications Contract
 
-[![Build Status](https://travis-ci.com/bounty0x/StakingContract.svg?branch=master)](https://travis-ci.com/bounty0x/StakingContract)
+[![Build Status](https://api.travis-ci.org/alexyalunin/avrorus-test-task.svg?branch=master)](https://travis-ci.org/alexyalunin/avrorus-test-task)
 
-Staking contract based on Zeppelin Contracts
+Loan applications contract based on Zeppelin Contracts
 
 ## Requirements
 
